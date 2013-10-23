@@ -4,7 +4,7 @@ from PyQt4 import QtGui, QtCore
 from gui_window2 import Ui_MainWindow as UIMW
 import sys
 
-
+#блах-блах-блах
 class MainWindow(QtGui.QMainWindow, UIMW):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
