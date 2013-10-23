@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<teacher first_name="Petr" last_name="Ivanov" birthday="1980-12-01T00:00:00">
+  <students>
+    <student first_name="Ivan" last_name="Petrov" birthday="1990-12-01T00:00:00"/>
+    <student first_name="Petr" last_name="Ivanov" birthday="1989-12-01T00:00:00"/>
+  </students>
+</teacher>

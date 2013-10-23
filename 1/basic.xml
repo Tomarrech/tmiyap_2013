@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<order order_name="'Avangard'" delivery_time="2013-10-24T00:00:00" order_price="80000" order_country="USA">
+  <goods>
+    <good good_country="Germany" good_production_date="2013-12-11T00:00:00" good_name="shovel" good_price="50000"/>
+    <good good_country="Italy" good_production_date="2013-08-04T00:00:00" good_name="steel" good_price="25000"/>
+    <good good_country="Russia" good_production_date="2012-10-12T00:00:00" good_name="snow" good_price="5000"/>
+  </goods>
+</order>
