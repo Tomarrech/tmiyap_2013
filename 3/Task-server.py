@@ -1,22 +1,47 @@
 __author__ = 'issahar'
+#coding: utf-8
 import socket
 
-sock = socket.socket()
+flag = b"{0123456789abcdef0123456789ABCDEF}"
+sigma = False
 
-sock.bind(("192.168.1.3", 14900))
-sock.listen(10)
 
-conn, addr = sock.accept()
-conn.settimeout(60)
-data = conn.recv(16384)
+def main():
+    sock = socket.socket()
+    sock.bind(("192.168.1.3", 14900))
+    sock.listen(10)
+    conn, addr = sock.accept()
+    conn.settimeout(10)
+    print "connected", addr
+    get_data(conn)
+    conn.close()
 
-if not data:
-    print "No data"
-else:
-    udata = data.decode("utf-8")
-    print("Data: " + udata)
 
-conn.send(b"Hello\n")
-conn.send(b"Welcome!")
+def get_data(conn):
 
-conn.close()
+    while True:
+        data = conn.recv(64)
+        if not data:
+            print "No data"
+            break
+        else:
+            udata = data.decode("utf-8")
+            print("Data: \n" + udata)
+            #sigma = True
+            break
+    check_flag(sigma, conn)
+
+
+
+def check_flag(sigma, conn):
+    if sigma is True:
+        print "Good work"
+        conn.send(b"Good, now you can get  your flag...\n")
+        conn.send(flag)
+    else:
+        print "Error"
+        conn.send(b"File is not correct, try again!")
+
+
+if __name__ == "__main__":
+    main()
