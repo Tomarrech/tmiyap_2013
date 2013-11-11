@@ -1,47 +1,72 @@
 __author__ = 'issahar'
 #coding: utf-8
 import socket
+from threading import *
+from os import path, remove
 
-flag = b"{0123456789abcdef0123456789ABCDEF}"
+flag = "{0123456789abcdef0123456789ABCDEF}"
 sigma = False
 
 
-def main():
-    sock = socket.socket()
-    sock.bind(("192.168.1.3", 14900))
-    sock.listen(10)
-    conn, addr = sock.accept()
-    conn.settimeout(10)
-    print "connected", addr
-    get_data(conn)
-    conn.close()
+class StreamHandler (Thread):
 
+    def __init__(this):
+        Thread.__init__(this)
 
-def get_data(conn):
+    def run(this):
+        this.process()
 
-    while True:
-        data = conn.recv(64)
-        if not data:
-            print "No data"
+    def bindsock(this):
+        this.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        this.sock.bind(("192.168.1.3", 9090))
+        this.sock.listen(10)
+        print '[File-Server] Listening on port 9090'
+
+    def acceptsock(this):
+        this.conn, this.addr = this.sock.accept()
+        print "[File-Server] have connected from", this.addr
+        while True:
+            data = this.conn.recv(16)
+            if not data:
+                break
+            if data[0:4] == "SEND": this.filename = data[5:]
+            print "[File-Server] is ready to receive ", this.filename
             break
+
+    def transfer(this):
+        filename = './in/' + path.basename(this.filename)
+        print "open new"
+        f = open(filename, "wb")
+        while 1:
+            print 'loading...'
+            this.sock.settimeout(1)
+            data = this.conn.recv(100)
+            if not data:
+                break
+            f.write(data)
+        f.close()
+
+        if path.getsize(this.filename) == 64:
+            print "Bingo!"
+            this.sock.send(flag)
         else:
-            udata = data.decode("utf-8")
-            print("Data: \n" + udata)
-            #sigma = True
-            break
-    check_flag(sigma, conn)
+            print "Suck!"
+            this.sock.send("try again!")
+
+        print '[File-Server] Got "%s"' % filename
+        print '[File-Server] Closing transfer for "%s"' % filename
+
+    def close(this):
+        this.conn.close()
+        this.sock.close()
+
+    def process(this):
+        while 1:
+            this.bindsock()
+            this.acceptsock()
+            this.transfer()
+            this.close()
 
 
-
-def check_flag(sigma, conn):
-    if sigma is True:
-        print "Good work"
-        conn.send(b"Good, now you can get  your flag...\n")
-        conn.send(flag)
-    else:
-        print "Error"
-        conn.send(b"File is not correct, try again!")
-
-
-if __name__ == "__main__":
-    main()
+s = StreamHandler()
+s.start()

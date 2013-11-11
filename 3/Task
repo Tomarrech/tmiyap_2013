@@ -1,4 +1,5 @@
 1) create file by 64 byte (for example txt)
 2) file must include server's IP and day in format dd.mm.yyyy
-3) send file to {addr:port}
+3) send to {addr:port} filename for the first time in format "SEND-filename", then send file
+    Ex:SEND_MyName.txt
 4) if file is correct, server will send you the flag

@@ -1,26 +1,43 @@
+from time import sleep
+
 __author__ = 'issahar'
 import socket
 import os
+HOST = "192.168.1.3"
+PORT = 9090
 
-conn = socket.socket()
-conn.connect(("192.168.1.3", 14900))
+FILE = 'send.txt'
+if os.path.getsize(FILE) == 64:
+    print "SIZE - OK"
+    connectLost = True
+else:
+    print "SIZE - ERROR"
+    connectLost = False
+sleep(1)
+while connectLost:
+    try:
+        cs = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        cs.connect((HOST, PORT))
+        cs.send("SEND " + FILE)
+        sleep(1)
 
-print os.path.getsize('send.txt')
-
-f = open('send.txt', 'r')
-info = f.read()
-while info:
-    conn.send(info)
-    info = f.readline()
-
-data = conn.recv(100)
-while True:
-    if not data:
-        print "No data"
+        f = open(FILE, "rb")
+        data = f.read()
+        f.close()
+        print 'Sending file %s' % FILE
+        cs.send(data)
+        print 'Sending file %s - OK' % FILE
+        while 1:
+            print 'loading flag...'
+            cs.settimeout(1)
+            data = cs.recv(100)
+            print data
+            if not data:
+                break
+        cs.close()
         break
-    else:
-        print(data.decode("utf-8"))
-        data = conn.recv(50)
-
-
-conn.close()
+        #connectLost = False
+    except:
+        print '\nConnection lost to %s:%s' % (HOST, PORT)
+        sleep(0.1)
+        connectLost = False
