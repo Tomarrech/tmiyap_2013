@@ -3,7 +3,7 @@ from time import sleep
 __author__ = 'issahar'
 import socket
 import os
-HOST = "192.168.1.3"
+HOST = ""
 PORT = 9090
 
 FILE = 'send.txt'

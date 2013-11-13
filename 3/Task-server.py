@@ -18,7 +18,7 @@ class StreamHandler (Thread):
 
     def bindsock(this):
         this.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        this.sock.bind(("192.168.1.3", 9090))
+        this.sock.bind(("", 9090))
         this.sock.listen(10)
         print '[File-Server] Listening on port 9090'
 
