@@ -11,7 +11,7 @@ if os.path.getsize(FILE) == 64:
     print "SIZE - OK"
     connectLost = True
 else:
-    print "SIZE - ERROR"
+    print "SIZE - ERROR 111 "
     connectLost = False
 sleep(1)
 while connectLost:
