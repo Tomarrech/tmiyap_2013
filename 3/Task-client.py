@@ -3,16 +3,16 @@ __author__ = 'issahar'
 from time import sleep
 import socket
 import os
-HOST = ""
-PORT = 9090
+HOST = "127.0.0.1"
+PORT = 8585
 
-FILE = 'send.txt'
+FILE = 'send2.txt'
 if os.path.getsize(FILE) == 64:
     print "SIZE - OK"
     connectLost = True
 else:
-    print "SIZE - ERROR"
-    connectLost = False
+    print "SIZE - ERROR", os.path.getsize(FILE)
+    connectLost = True
 sleep(1)
 while connectLost:
     try:

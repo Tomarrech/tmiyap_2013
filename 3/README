@@ -1,0 +1,9 @@
+Task-Name:
+	GiveMeFile
+Description:
+	You should send file to server, which contains date in format %d.%d.%Y and it's size must be only 64 bytes.
+	Then you would get the flag or not :3
+Port: 
+	8585
+Cost:
+	1000
