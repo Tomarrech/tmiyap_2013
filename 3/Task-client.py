@@ -3,17 +3,16 @@ from time import sleep
 __author__ = 'issahar'
 import socket
 import os
-HOST = ""
+HOST = "127.0.0.1"
 PORT = 9090
 
-FILE = 'send.txt'
+FILE = 'send2.txt'
 if os.path.getsize(FILE) == 64:
     print "SIZE - OK"
     connectLost = True
 else:
     print "SIZE - ERROR"
-    connectLost = False
-sleep(1)
+    connectLost = True
 while connectLost:
     try:
         cs = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -28,12 +27,11 @@ while connectLost:
         cs.send(data)
         print 'Sending file %s - OK' % FILE
         while 1:
-            print 'loading flag...'
-            cs.settimeout(1)
-            data = cs.recv(100)
-            print data
+            print 'getting flag...'
+            data = cs.recv(30)
             if not data:
                 break
+            print 'flag is ', data
         cs.close()
         break
         #connectLost = False
