@@ -1,6 +1,6 @@
-from time import sleep
-
 __author__ = 'issahar'
+#coding: utf-8
+from time import sleep
 import socket
 import os
 HOST = ""

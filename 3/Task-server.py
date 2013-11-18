@@ -2,7 +2,7 @@ __author__ = 'issahar'
 #coding: utf-8
 import socket
 from threading import *
-from os import path, remove
+from os import path
 
 flag = "flag{154afd654cae654f}"
 sigma = False
