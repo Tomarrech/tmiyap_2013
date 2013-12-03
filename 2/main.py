@@ -1,6 +1,7 @@
 from classes import Order, Good
 import filtration
 from datetime import datetime
+import random
 
 good_1 = Good('shovel', 'Germany', 50000, datetime(2013, 12, 11))
 good_2 = Good('steel', 'Italy', 25000, datetime(2013, 8, 4))
@@ -32,6 +33,23 @@ all_orders = [order_1, order_2, order_3, order_4]
 
 date_1 = datetime(2013, 9, 25)
 date_2 = datetime(2013, 12, 31)
-print filtration.filter_order_by_time_interval(all_orders, date_1, date_2)
 
-print filtration.filter_goods_in_order_by_time_interval(order_3, date_1, date_2)
+#print filtration.filter_order_by_time_interval(all_orders, date_1, date_2)
+
+#print filtration.filter_goods_in_order_by_time_interval(order_3, date_1, date_2)
+
+#print order_3.goods
+
+
+
+
+
+
+list_1 = []
+for a in range(0, 20):
+    list_1.append(random.randint(-999, 999))
+
+res = 1
+for b in list_1:
+    res = b*res
+print res
