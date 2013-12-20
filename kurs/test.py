@@ -3,17 +3,22 @@ import sys
 import time
 import re
 # 192.168.1.1-192.168.1.225,192.168.2.1 20-80,99 2
-# 192.168.1.1,192.168.1.225,192.168.2.1 20-80,99 2
+# 192.168.1.1,192.168.1.225,192.168.2.1 12,20-80,99 2
 # 192.168.1.1-192.168.1.225,192.168.2.1-192.168.2.255,127.0.0.1 20-80,99 2
+
+# 127.0.0.1,192.168.1.1-192.168.1.7 10-446 3
 print 'first:', sys.argv[1]
 print 'second:', sys.argv[2]
 print 'third:', sys.argv[3]
 ips = []
-# r'[0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]'
-input = sys.argv[1]
-ranges = input.split(',')
+ports = []
+
+ip_input = sys.argv[1]
+ip_ranges = ip_input.split(',')
 reg = '([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])[- /.]([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])' \
       '[- /.]([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])[- /.]([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])'
+port_input = sys.argv[2]
+port_ranges = port_input.split(',')
 
 
 def make_ip_list(start_ip, last_ip):
@@ -50,7 +55,15 @@ def make_ip_list(start_ip, last_ip):
     print "Done!\n"
     return host_list
 
-for ran in ranges:
+
+def make_port_list(start_port, last_port):
+    port_list = []
+    while start_port <= last_port:
+        port_list.append(start_port)
+        start_port += 1
+    return port_list
+
+for ran in ip_ranges:
     if not '-' in ran:
         if re.match(reg, ran):
             ips.append(ran)
@@ -61,3 +74,12 @@ for ran in ranges:
         else:
             er_key = True
 print len(ips)
+
+for p in port_ranges:
+    if not '-' in p:
+        ports.append(p)
+    else:
+        a, b = p.split('-')
+        if int(a) < 65536 and int(b) < 65536:
+            ports.extend(make_port_list(int(a), int(b)))
+print len(ports)

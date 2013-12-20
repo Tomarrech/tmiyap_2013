@@ -8,11 +8,12 @@ from multiprocessing import Process
 
 host0 = '127.0.0.1'
 host1 = '192.168.1.1'
-host2 = '192.168.1.3'
-host3 = '192.168.1.5'
-host4 = '192.168.1.7'
-host5 = '192.168.1.8'
-load_hosts = [host0, host1, host2, host3, host4, host5]
+host2 = '192.168.1.2'
+host3 = '192.168.1.3'
+host4 = '192.168.1.4'
+host5 = '192.168.1.5'
+host6 = '192.168.1.6'
+load_hosts = [host0, host1, host2, host3, host4, host5, host6]
 load_ports = [21, 23, 53, 67, 69, 80, 443, 445]
 open_tcp_ports = {}
 open_udp_ports = {}
