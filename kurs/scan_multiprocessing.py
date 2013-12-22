@@ -6,19 +6,8 @@ __author__ = 'issahar'
 import socket
 from multiprocessing import Process
 
-host0 = '127.0.0.1'
-host1 = '192.168.1.1'
-host2 = '192.168.1.2'
-host3 = '192.168.1.3'
-host4 = '192.168.1.4'
-host5 = '192.168.1.5'
-host6 = '192.168.1.6'
-load_hosts = [host0, host1, host2, host3, host4, host5, host6]
-load_ports = [21, 23, 53, 67, 69, 80, 443, 445]
 open_tcp_ports = {}
 open_udp_ports = {}
-threads = 1
-
 # opens = {'host1': [1, 2, 3, 4, 5], 'host2': [231, 23, 543, 521]}
 
 
@@ -53,22 +42,22 @@ def scan(hosts, ports):
                 if not host in open_tcp_ports:
                     open_tcp_ports[host] = []
                 open_tcp_ports[host].append(port)
-        print 'ports: ', open_tcp_ports, open_udp_ports
+        print 'ports on host %s: %s %s' % (host, open_tcp_ports, open_udp_ports)
 
 
 def loading_data(t_hosts, t_ports, threads=1):
 
     real_threads = threads if threads >= len(t_hosts) else len(t_hosts)
-    print "real thr: ", real_threads
+    #print "real thr: ", real_threads
     hosts_on_thread = len(t_hosts) / real_threads
-    print "t_hosts/thr: ", hosts_on_thread
+    #print "t_hosts/thr: ", hosts_on_thread
 
     for thr in range(real_threads):
         start = thr * hosts_on_thread
         stop = (thr + 1) * hosts_on_thread if thr != real_threads - 1 else real_threads
         #print "start, stop, thr: ", start, stop, thr
-        #print "host for thread: ", t_hosts[start:stop]
+        #print "host for process: ", t_hosts[start:stop]
         Process(target=scan, args=(t_hosts[start:stop], t_ports)).start()
-        time.sleep(0.1)
-    print "total:\n\ttcp: %s; udp: %s" % (open_tcp_ports, open_udp_ports)
+        time.sleep(0.25)
+        print "total:\n\ttcp: %s; udp: %s" % (open_tcp_ports, open_udp_ports)
     return open_tcp_ports, open_udp_ports

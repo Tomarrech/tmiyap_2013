@@ -2,24 +2,14 @@
 # -*- coding: utf_8 -*-
 __author__ = 'issahar'
 #import scan_threads
-from scan_multiprocessing import loading_data
+from scan_threads import loading_data
+#from scan_multiprocessing import loading_data
 import sys
 import time
 import re
 
-'''
-host0 = '127.0.0.1'
-host1 = '192.168.1.1'
-host2 = '192.168.1.2'
-host3 = '192.168.1.3'
-host4 = '192.168.1.4'
-host5 = '192.168.1.5'
-host6 = '192.168.1.6'
-load_hosts = [host0, host1, host2, host3, host4, host5, host6]
-load_ports = [21, 23, 53, 67, 69, 80, 443, 445]
-'''
-open_tcp_ports = {}
-open_udp_ports = {}
+#open_tcp_ports = {}
+#open_udp_ports = {}
 
 if __name__ == '__main__':
     ips = []
@@ -80,19 +70,19 @@ if __name__ == '__main__':
                 ips.extend(make_ip_list(a, b))
             else:
                 er_key = True
-    print len(ips)
+    #print len(ips)
 
     for p in port_ranges:
         if not '-' in p:
-            ports.append(p)
+            ports.append(int(p))
         else:
             a, b = p.split('-')
             if int(a) < 65536 and int(b) < 65536:
                 ports.extend(make_port_list(int(a), int(b)))
-    print len(ports)
+    #print len(ports)
 
 
     tcp, udp = loading_data(ips, ports, int(threads))
-    print tcp, ' - ', udp
+    print " tcp ports: %s\n udp ports %s" % (tcp, udp)
 
     sys.exit("bye!")
