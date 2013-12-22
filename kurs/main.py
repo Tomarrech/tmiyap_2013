@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf_8 -*-
 __author__ = 'issahar'
-import scan_threads
+#import scan_threads
+from scan_multiprocessing import loading_data
 import sys
 import time
 import re
@@ -91,7 +92,7 @@ if __name__ == '__main__':
     print len(ports)
 
 
-    tcp, udp = scan_threads.loading_data(ips, ports, int(threads))
+    tcp, udp = loading_data(ips, ports, int(threads))
     print tcp, ' - ', udp
 
     sys.exit("bye!")

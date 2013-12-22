@@ -53,21 +53,22 @@ def scan(hosts, ports):
                 if not host in open_tcp_ports:
                     open_tcp_ports[host] = []
                 open_tcp_ports[host].append(port)
-                print 'ports: ', open_tcp_ports, open_udp_ports
+        print 'ports: ', open_tcp_ports, open_udp_ports
 
 
-if __name__ == '__main__':
+def loading_data(t_hosts, t_ports, threads=1):
 
-    real_threads = threads if threads >= len(load_hosts) else len(load_hosts)
+    real_threads = threads if threads >= len(t_hosts) else len(t_hosts)
     print "real thr: ", real_threads
-    hosts_on_thread = len(load_ports) / real_threads
+    hosts_on_thread = len(t_hosts) / real_threads
     print "t_hosts/thr: ", hosts_on_thread
 
     for thr in range(real_threads):
         start = thr * hosts_on_thread
         stop = (thr + 1) * hosts_on_thread if thr != real_threads - 1 else real_threads
-        print "start, stop, thr: ", start, stop, thr
+        #print "start, stop, thr: ", start, stop, thr
         #print "host for thread: ", t_hosts[start:stop]
-        Process(target=scan, args=(load_hosts[start:stop], load_ports)).start()
-        time.sleep(0.5)
+        Process(target=scan, args=(t_hosts[start:stop], t_ports)).start()
+        time.sleep(0.1)
     print "total:\n\ttcp: %s; udp: %s" % (open_tcp_ports, open_udp_ports)
+    return open_tcp_ports, open_udp_ports

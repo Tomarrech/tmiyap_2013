@@ -32,14 +32,14 @@ def scan(hosts, ports):
                     if not host in open_udp_ports:
                         open_udp_ports[host] = []
                     open_udp_ports[host].append(port)
-                    print open_udp_ports
+                    #print open_udp_ports
                 except socket.error:
                     pass
             else:
                 if not host in open_tcp_ports:
                     open_tcp_ports[host] = []
                 open_tcp_ports[host].append(port)
-                print open_tcp_ports
+                #print open_tcp_ports
 
 
 def loading_data(t_hosts, t_ports, threads=1):
@@ -54,5 +54,5 @@ def loading_data(t_hosts, t_ports, threads=1):
         stop = (thr + 1) * hosts_on_thread if thr != real_threads - 1 else real_threads
         Thread(target=scan, args=(t_hosts[start:stop], t_ports)).start()
         time.sleep(0.1)
-    print open_tcp_ports, open_udp_ports
+    print 'az ', open_tcp_ports, open_udp_ports
     return open_tcp_ports, open_udp_ports
