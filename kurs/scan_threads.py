@@ -4,7 +4,6 @@ __author__ = 'issahar'
 import socket
 import time
 from threading import *
-import  trace
 
 open_tcp_ports = {}
 open_udp_ports = {}
@@ -33,22 +32,18 @@ def scan(hosts, ports):
                     if not host in open_udp_ports:
                         open_udp_ports[host] = []
                     open_udp_ports[host].append(port)
-                    #print open_udp_ports
                 except socket.error:
                     pass
             else:
                 if not host in open_tcp_ports:
                     open_tcp_ports[host] = []
                 open_tcp_ports[host].append(port)
-                #print open_tcp_ports
 
 
 def loading_data(t_hosts, t_ports, threads=1):
 
     real_threads = threads if threads >= len(t_hosts) else len(t_hosts)
-    print "real thr: ", real_threads
     hosts_on_thread = len(t_hosts) / real_threads
-    print "t_hosts/thr: ", hosts_on_thread
 
     for thr in range(real_threads):
         start = thr * hosts_on_thread
@@ -58,5 +53,4 @@ def loading_data(t_hosts, t_ports, threads=1):
         th.join()
         time.sleep(0.1)
 
-    #print 'az ', open_tcp_ports, open_udp_ports
     return open_tcp_ports, open_udp_ports

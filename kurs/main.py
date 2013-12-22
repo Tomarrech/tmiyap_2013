@@ -1,15 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf_8 -*-
 __author__ = 'issahar'
-#import scan_threads
 from scan_threads import loading_data
-#from scan_multiprocessing import loading_data
+from comparison import comparison_port
 import sys
 import time
 import re
-
-#open_tcp_ports = {}
-#open_udp_ports = {}
 
 if __name__ == '__main__':
     ips = []
@@ -70,7 +66,6 @@ if __name__ == '__main__':
                 ips.extend(make_ip_list(a, b))
             else:
                 er_key = True
-    #print len(ips)
 
     for p in port_ranges:
         if not '-' in p:
@@ -79,10 +74,10 @@ if __name__ == '__main__':
             a, b = p.split('-')
             if int(a) < 65536 and int(b) < 65536:
                 ports.extend(make_port_list(int(a), int(b)))
-    #print len(ports)
-
-
+    print "Ready for looking... Please, waiting some times..."
     tcp, udp = loading_data(ips, ports, int(threads))
-    print " tcp ports: %s\n udp ports %s" % (tcp, udp)
-
-    sys.exit("bye!")
+    print "Search complited. Comparing TCP ports... "
+    comparison_port(tcp)
+    print "\nComparing UDP ports... "
+    comparison_port(udp)
+    sys.exit("\nHave a good day!")
