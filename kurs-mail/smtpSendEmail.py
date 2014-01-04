@@ -111,3 +111,12 @@ def s_auth(user, password):
         return True
     else:
         return False
+
+
+def smtp_quit():
+    if request('QUIT')[0] == '2':
+        sock.close()
+        return True
+    else:
+        sock.close()
+        return False

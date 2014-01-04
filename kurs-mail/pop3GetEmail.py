@@ -160,7 +160,6 @@ def get_mess_by_id(number_message, cod=None):
 
 def pop_quit():
     if request("QUIT")[:3] == "+OK":
-        request("QUIT")
         sock.close()
         return True
     else:

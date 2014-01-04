@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-__author__ = 'issahar'
 from pop3GetEmail import *
 from smtpSendEmail import *
 import sys
@@ -93,7 +92,10 @@ if __name__ == "__main__":
             elif cmd == "smtp":
                 work_with_smtp()
             elif cmd == "exit":
-                sys.exit("Выход по требованию.")
+                if pop_quit() and smtp_quit():
+                    sys.exit("Выход по требованию.")
+                else:
+                    sys.exit("Некорректный выход")
             else:
                 print u"Некорректная команда"
     except EOFError:
