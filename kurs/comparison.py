@@ -7,7 +7,7 @@ import os
 
 def comparison_port(open_ports):
     try:
-        if not os.path.exists('./ports.db'):
+        if not os.path.exists("./ports.db"):
             raise NameError('FileNotFoundError ')
         conn = sqlite3.connect("./ports.db")
         c = conn.cursor()
