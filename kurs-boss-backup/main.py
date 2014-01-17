@@ -10,9 +10,6 @@ if __name__ == "__main__":
         #was used by user
         OutputFolder = raw_input("Please, type OutputFolder for making backups[C:\Users\tomar_000\Dropbox\Backup]\n$>")
         #remember path for backups
-        RootFoldersFile = "tobackup.lst"
-        IgnoreFoldersFile = "ignore.lst"
-        ExtraFile = "extra.lst"
 
         if OutputFolder:
             f = open("./OutputFolder", 'w')
@@ -34,15 +31,22 @@ if __name__ == "__main__":
                 print "Destination file is empty, aborting..."
                 exit(403)
 
+            if not os.path.isdir(OutputFolder):
+                try:
+                    os.makedirs(OutputFolder)
+                except:
+                    print("! Can't create output folder %s" % OutputFolder)
+                    exit(403)
+
             backup_type = sys.argv[1]
             if backup_type[2:] in ['full', 'differ', 'increment']:
                 print "Now making %s backup to %s..." % (backup_type[2:], OutputFolder)
                 if backup_type[2:] == 'full':
-                    make_full()
+                    make_full(OutputFolder)
                 elif backup_type[2:] == 'differ':
-                    make_differ()
+                    make_differ(OutputFolder)
                 else:
-                    make_increment()
+                    make_increment(OutputFolder)
             else:
                 print "Uncorrected type."
         except:
