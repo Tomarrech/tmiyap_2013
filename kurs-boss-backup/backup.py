@@ -162,13 +162,18 @@ def copy_folder(src_dirs, out_dirs, type=0):
                 pass
 
 
-def read_config(OutputFolder, full=False):
+def read_config(OutputFolder, type=None):
+    """
+    if type = 1 - full, 2 - increment, None - different
+    """
     RootFoldersFile = "tobackup.lst"
     IgnoreFoldersFile = "ignore.lst"
     ExtraFile = "extra.lst"
 
-    if full:
+    if type == 1:
         OutputFolder += '/full_' + datetime.now().strftime("%d.%b.%y_%H.%M")
+    elif type == 2:
+        OutputFolder += '/inc_' + datetime.now().strftime("%d.%b.%y_%H.%M")
     else:
         OutputFolder += '/' + datetime.now().strftime("%d.%b.%y_%H.%M")
     #print OutputFolder
@@ -241,7 +246,7 @@ def SQL_check(last_db_file, check_file):
 
 
 def make_full(OutputFolder):
-    rootFolders, extraList, OutputFolder = read_config(OutputFolder, True)
+    rootFolders, extraList, OutputFolder = read_config(OutputFolder, 1)
     #print rootFolders, ignoreList, extraList
 
     errors = 0
@@ -375,5 +380,79 @@ def make_differ(OutputFolder):
 
 
 def make_increment(OutputFolder):
-    print "incr done"
-    pass
+    rootFolders, extraList, OutputFolder = read_config(OutputFolder, 2)
+    errors = 0
+
+
+    os.chdir(OutputFolder)
+    os.chdir('../')
+    dirs = os.listdir(os.getcwd())
+    #make list of databases
+    dbs = []
+    for dir in dirs:
+        if dir[:4] == 'full':
+            os.chdir(OutputFolder+'/../'+dir)
+            dbs.append(os.getcwd() + "/findex.db")
+
+    #and choose the last
+    global last_db_file
+    last_db_file = dbs[0]
+    for db in dbs[1:]:
+        if os.stat(db).st_mtime < last_db_file:
+            last_db_file = db
+    print "Found last db file: %s" % last_db_file
+
+    #make copy to the same sir, as last backup
+    print OutputFolder
+
+    #elementary copy
+    for rootFolder in rootFolders:
+        inputTree = create_folder_struc(rootFolder)
+        make_dir_tree(rootFolder, inputTree)
+
+        outFolder = inputTree['full_path']
+        outFolder = outFolder.replace(':', '_')
+        outFolder = os.path.join(OutputFolder, outFolder)
+
+        print('[%s] -> [%s]...' % (rootFolder, outFolder))
+
+        if not os.path.isdir(outFolder):
+            try:
+                os.makedirs(outFolder)
+                print('Maked dir: [%s]' % outFolder)
+            except:
+                print("! Can't create output folder [%s]" % outFolder)
+                print("! Skip input folder %s" % rootFolder)
+                errors += 1
+                continue
+
+        global index_path
+        index_path = OutputFolder+'\\findex.db'
+
+        outputTree = create_folder_struc(outFolder)
+        make_dir_tree(outFolder, outputTree)
+        copy_folder(inputTree, outputTree)
+
+    print('Backing files...')
+
+    for file_in_line in extraList:
+        outFileDir = os.path.join(OutputFolder, os.path.dirname(file_in_line).replace(':', '_'))
+        if not os.path.isdir(outFileDir):
+            try:
+                os.makedirs(outFileDir)
+            except:
+                print("! Can't create output folder [%s]. Skip extra file %s" % (outFileDir, file_in_line))
+                errors += 1
+                continue
+
+        fullTo = os.path.join(outFileDir, os.path.basename(file_in_line))
+        #there we make hash to look in bd
+        if not SQL_check(last_db_file, file_in_line):
+            copy_file(file_in_line, fullTo)
+            global copiedFiles
+            copiedFiles += 1
+        else:
+            global skippedFiles
+            skippedFiles += 1
+            pass
+    print "Errors: %s, skipped: %s, copied: %s" % (errors, skippedFiles, copiedFiles)
