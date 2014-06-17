@@ -16,3 +16,5 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 34 12 * * *	root	C:\Users\tomar_000\PycharmProjects\tmiyap_2013\kurs-boss-backup/main.py --increment
 
 0 7 * * 1	root	C:\Users\tomar_000\PycharmProjects\tmiyap_2013\kurs-boss-backup/main.py --full
+
+0 * * * *	root	C:\Users\tomar_000\PycharmProjects\tmiyap_2013\kurs-boss-backup/main.py --increment

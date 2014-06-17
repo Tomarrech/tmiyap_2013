@@ -1,0 +1,138 @@
+# -*- coding: utf-8 -*-
+import socket
+import traceback
+from datetime import datetime
+
+
+class HTTPError(Exception):
+    pass
+
+
+def parse_http(data):
+    lines = data.split('\r\n')
+    query = lines[0].split(' ', 2)
+    body = ''
+    headers = {}
+    for pos, line in enumerate(lines[1:]):
+        if not line.strip():
+            break
+        key, value = line.split(': ', 1)
+        headers[key.upper()] = value
+
+        body = '\r\n'.join(lines[pos+2:])
+    print body
+    return query, headers, body
+
+
+def encode_http(query, body='', **headers):
+    data = [" ".join(query)]
+
+    headers = "\r\n".join("%s: %s" % ("-".join(part.title() for part in key.split('_')), value)
+                          for key, value in sorted(headers.iteritems()))
+
+    if headers:
+        data.append(headers)
+
+    data.append('')
+
+    if body:
+        data.append(body)
+
+    return "\r\n".join(data)
+
+
+class Request(object):
+    """Контейнер с данными текущего запроса и средством ответа на него"""
+
+    def __init__(self, method, url, headers, body, conn):
+        self.method = method
+        self.url = url
+        self.headers = headers
+        self.body = body
+        self.conn = conn
+
+    def __str__(self):
+        return "%s %s %r" % (self.method, self.url, self.headers)
+
+    def reply(self, code='200', status='OK', body='', **headers):
+        headers.setdefault('server', 'OwnHands/0.1')
+        headers.setdefault('content_type', 'text/plain')
+        headers.setdefault('content_length', len(body))
+        headers.setdefault('connection', 'close')
+        headers.setdefault('date', datetime.now().ctime())
+
+        self.conn.send(encode_http(('HTTP/1.0', code, status), body, **headers))
+        self.conn.close()
+
+
+class HTTPServer(object):
+    def __init__(self, host='', port=8000):
+        """Распихиваем по карманам аргументы для старта"""
+        self.host = host
+        self.port = port
+        self.handlers = []
+
+    def serve(self):
+        """Цикл ожидания входящих соединений"""
+
+        while True:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            sock.bind(('127.0.0.1', 8000))
+            sock.listen(50)
+            conn, addr = sock.accept()
+            #sock.settimeout(1)
+            self.on_connect(conn, addr)
+
+    def on_connect(self, conn, addr):
+        """Соединение установлено, вычитываем запрос"""
+
+        (method, url, proto), headers, body = parse_http(conn.recv(1024))
+        self.on_request(Request(method, url, headers, body, conn))
+
+    def on_request(self, request):
+        """Обработка запроса"""
+        print "Request ", request
+
+        try:
+            for pattern, handler in self.handlers:
+                if pattern(request):
+                    handler(request)
+                    return True
+        except HTTPError as error:
+            code = error.args[0]
+            reply = {
+                404: 'Not found',
+                403: 'Permission denied',
+            }[code]
+            request.reply(str(code), reply, "%s: %s" % (reply, request.url))
+            return False
+        except Exception as err:
+            request.reply('500', 'Infernal server error', traceback.format_exc())
+            return False
+
+        # никто не взялся ответить
+        request.reply('404', 'Not found', 'Письмо самурай получил\nТают следы на песке\nСтраница не найдена')
+
+    def register(self, pattern, handler):
+        self.handlers.append((pattern, handler))
+        pass
+
+if __name__ == '__main__':
+    from handlers import serve_static
+
+    port, root = 8000, '.'
+
+    try:
+        import argparse
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--port', nargs='?', type=int, default=port)
+        parser.add_argument('--root', nargs='?', type=str, default=root)
+        options = parser.parse_args()
+        port, root = options.port, options.root
+    except ImportError:
+        pass
+
+    server = HTTPServer(port=port)
+    server.register(*serve_static('/', root))
+    server.serve()

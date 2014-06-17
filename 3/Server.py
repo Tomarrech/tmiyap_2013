@@ -1,7 +1,7 @@
 #coding: utf-8
 __author__ = 'issahar'
 #import console_interface
-import classes
+import models
 import sys
 import socket
 import asyncore

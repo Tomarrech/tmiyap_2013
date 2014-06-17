@@ -2,6 +2,8 @@ __author__ = 'issahar'
 import select
 import socket
 import sys
+import console_interface
+
 
 host = ''
 port = 8989

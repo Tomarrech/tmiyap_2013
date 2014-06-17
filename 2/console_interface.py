@@ -113,25 +113,25 @@ def read_file(params):
 def select_order(params):
     files = []
 
-    for f in os.listdir(STORAGE_ROOT):
-        if f.find('order') == -1:
-            pass
-        elif params.get('name') and params.get('country'):
-            pattern = '^order.'+params['name']+'.'+params['country']+'.[1-9]+'
+    for fille_name in os.listdir(STORAGE_ROOT):
+        if fille_name.find('order') == -1:
+            continue
+        elif 'name' in params and 'country' in params:
+            pattern = '^order.' + params['name'] + '.' + params['country'] + '.[1-9]+'
             reg = re.compile(pattern)
-            if reg.findall(f):
-                files.append(f)
-                print files
+            if reg.match(fille_name):
+                files.append(fille_name)
         elif params.get('name'):
-            if f.find(params['name']) != -1:
-                files.append(f)
+            if fille_name.find(params['name']) != -1:
+                files.append(fille_name)
         elif params.get('country'):
-            if f.find(params['country']) != -1:
-                files.append(f)
+            if fille_name.find(params['country']) != -1:
+                files.append(fille_name)
+
     #вхождение ключа в словарь
     #print files
-    for f in files:
-        t_path = STORAGE_ROOT+'/'+f
+    for fille_name in files:
+        t_path = STORAGE_ROOT+'/'+fille_name
         t_order = json.load(open(t_path, 'r'))
         # if key in dict
         if params.get('price'):
@@ -140,6 +140,7 @@ def select_order(params):
                 return t_order
             else:
                 print "Erererer"
+                return None
         else:
             return t_order
 
@@ -150,7 +151,7 @@ while True:
     print 'parsed: ', par_dict
 
     if cmd == 'q':
-        print "Fuck off! bye!"
+        print "go off! bye!"
         break
     # cG -name AAA -country BBB -cost 123 -date 10.11.2013
     # cO -name Avan -country USA -date 11.12.2013
@@ -169,4 +170,4 @@ while True:
         print select_order(keys)
         #todo: select orders (keys[name, country, price...],)
     else:
-        print 'fuck off, stupid!'
+        print 'go` off, stupid!'

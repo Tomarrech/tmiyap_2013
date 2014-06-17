@@ -2,7 +2,7 @@
 __author__ = 'issahar'
 import os
 from os import path
-from classes import Good, Order
+from models import Good, Order
 import re
 import json
 from datetime import datetime
@@ -144,28 +144,29 @@ def select_order(params):
             return t_order
 
 
-while True:
-    cmd = raw_input("Write your command: ")
-    par_dict = extract_params(cmd)
-    print 'parsed: ', par_dict
+if __name__ == '__main__':
+    while True:
+        cmd = raw_input("Write your command: ")
+        par_dict = extract_params(cmd)
+        print 'parsed: ', par_dict
 
-    if cmd == 'q':
-        print "Fuck off! bye!"
-        break
-    # cG -name AAA -country BBB -cost 123 -date 10.11.2013
-    # cO -name Avan -country USA -date 11.12.2013
-    elif cmd[0] == 'c':
-        print 'create Good or Order'
-        create_g_o(cmd, par_dict)
-    # a -name good1 -country Africa -g_id 3 -to Avan -ord_c USA -o_id 5
-    elif cmd[0] == 'a':
-        add_g_to_o(par_dict)
-        print "good", par_dict['name'], 'added to Order', par_dict['to']
-    # r -type good -name Avan -country USA -id 7
-    # r -name Avan -country USA -price 123
-    elif cmd[0] == 'r':
-        #read_file(par_dict)
-        keys = par_dict
-        print select_order(keys)
-    else:
-        print 'fuck off, stupid!'
+        if cmd == 'q':
+            print "Fuck off! bye!"
+            break
+        # cG -name AAA -country BBB -cost 123 -date 10.11.2013
+        # cO -name Avan -country USA -date 11.12.2013
+        elif cmd[0] == 'c':
+            print 'create Good or Order'
+            create_g_o(cmd, par_dict)
+        # a -name good1 -country Africa -g_id 3 -to Avan -ord_c USA -o_id 5
+        elif cmd[0] == 'a':
+            add_g_to_o(par_dict)
+            print "good", par_dict['name'], 'added to Order', par_dict['to']
+        # r -type good -name Avan -country USA -id 7
+        # r -name Avan -country USA -price 123
+        elif cmd[0] == 'r':
+            #read_file(par_dict)
+            keys = par_dict
+            print select_order(keys)
+        else:
+            print 'fuck off, stupid!'

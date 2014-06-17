@@ -8,7 +8,8 @@ if __name__ == "__main__":
 
     if len(sys.argv) == 1:
         #was used by user
-        OutputFolder = raw_input("Please, type OutputFolder for making backups[C:\Users\tomar_000\Dropbox\Backup]\n$>")
+        OutputFolder = raw_input("Please, type OutputFolder for making backups"
+                                 "\[Ex: home/user/Dropbox/Backup]\n$>")
         #remember path for backups
 
         if OutputFolder:
@@ -22,6 +23,14 @@ if __name__ == "__main__":
                 break
             else:
                 make_timetable()
+        do_now = False
+        if raw_input("Done full backup of directory? [no - if not]\n$>") == "no":
+            print("ok, all types of back will be done by timetable. Bye!")
+        else:
+            print("ok, making full backup now...")
+            if not OutputFolder:
+                OutputFolder = open("./destination", 'r').read()
+            make_full(OutputFolder)
 
     elif len(sys.argv) == 2:
         #was used by cron

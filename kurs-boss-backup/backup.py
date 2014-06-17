@@ -209,8 +209,6 @@ def read_config(OutputFolder, type=None):
         if '' in extraList:
             extraList.remove('')
 
-        print('Extra files...')
-
     return rootFolders, extraList, OutputFolder
 
 

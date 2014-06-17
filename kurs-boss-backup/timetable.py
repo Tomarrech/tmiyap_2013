@@ -2,7 +2,7 @@ __author__ = 'issahar'
 import os
 
 global SCRIPT_PATH
-SCRIPT_PATH = os.getcwd() + "/backup.py"
+SCRIPT_PATH = os.getcwd() + "/main.py"
 
 
 def write_to_cron(line):
